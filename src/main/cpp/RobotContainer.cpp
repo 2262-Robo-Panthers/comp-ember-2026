@@ -81,6 +81,37 @@ void RobotContainer::ConfigureBindings() {
       {&m_subsystemDrive}
     )
   );
+
+  /***
+   *** Shooter
+   ***/
+
+  m_endEffectorController.A().OnTrue(
+    frc2::cmd::RunOnce(
+      [this]() {
+        m_subsystemShooter.setSpeed(1.0);
+      },
+      {&m_subsystemShooter}
+    )
+  );
+
+  m_endEffectorController.B().OnTrue(
+    frc2::cmd::RunOnce(
+      [this]() {
+        m_subsystemShooter.setSpeed(0.67);
+      },
+      {&m_subsystemShooter}
+    )
+  );
+
+  m_endEffectorController.X().OnTrue(
+    frc2::cmd::RunOnce(
+      [this]() {
+        m_subsystemShooter.setSpeed(0.0);
+      },
+      {&m_subsystemShooter}
+    )
+  );
 }
 
 frc2::CommandPtr RobotContainer::GetAutonomousCommand() {

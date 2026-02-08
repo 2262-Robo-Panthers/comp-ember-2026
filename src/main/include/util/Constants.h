@@ -93,6 +93,14 @@ namespace Drive {
   };
 }
 
+namespace Shooter {
+  namespace Can {
+    using Types::CanId;
+
+    constexpr CanId main = 24; // TODO assign actual CAN IDs
+    constexpr CanId follower = 25;
+  }
+}
 
 namespace Movement {
   constexpr double positionalEpsilon = 0.03;

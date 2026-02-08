@@ -8,6 +8,7 @@
 #include <frc2/command/button/CommandXboxController.h>
 
 #include "subsystems/Drive.h"
+#include "subsystems/Shooter.h"
 
 #include "util/Constants.h"
 
@@ -24,4 +25,5 @@ class RobotContainer {
   frc2::CommandXboxController m_endEffectorController{Constants::Operator::Usb::endEffector};
 
   Subsystems::Drive m_subsystemDrive;
+  Subsystems::Shooter m_subsystemShooter;
 };
