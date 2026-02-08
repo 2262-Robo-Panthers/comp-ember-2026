@@ -5,6 +5,11 @@
 #pragma once
 
 #include <frc2/command/CommandPtr.h>
+#include <frc2/command/button/CommandXboxController.h>
+
+#include "subsystems/Drive.h"
+
+#include "util/Constants.h"
 
 class RobotContainer {
  public:
@@ -14,4 +19,9 @@ class RobotContainer {
 
  private:
   void ConfigureBindings();
+
+  frc2::CommandXboxController m_driveTrainController{Constants::Operator::Usb::driveTrain};
+  frc2::CommandXboxController m_endEffectorController{Constants::Operator::Usb::endEffector};
+
+  Subsystems::Drive m_subsystemDrive;
 };
