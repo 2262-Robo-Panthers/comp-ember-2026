@@ -93,4 +93,10 @@ namespace Drive {
   };
 }
 
+
+namespace Movement {
+  constexpr double positionalEpsilon = 0.03;
+  constexpr auto commandTimeout = 2.0_s;
+}
+
 }
