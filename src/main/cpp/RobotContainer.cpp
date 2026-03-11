@@ -5,7 +5,11 @@
 #include "RobotContainer.h"
 
 #include <frc/MathUtil.h>
+#include <frc/smartdashboard/SmartDashboard.h>
 #include <frc2/command/Commands.h>
+
+#include <pathplanner/lib/auto/AutoBuilder.h>
+#include <pathplanner/lib/auto/NamedCommands.h>
 
 #include "util/Constants.h"
 
@@ -13,7 +17,11 @@
 #define Y_AXIS(ctrl, bind) (-AXIS(ctrl, bind))
 
 RobotContainer::RobotContainer() {
+  ConfigureNamedCommands();
   ConfigureBindings();
+
+  m_autoChooser = pathplanner::AutoBuilder::buildAutoChooser();
+  frc::SmartDashboard::PutData("Auto Chooser", &m_autoChooser);
 }
 
 void RobotContainer::ConfigureBindings() {
@@ -114,6 +122,6 @@ void RobotContainer::ConfigureBindings() {
   );
 }
 
-frc2::CommandPtr RobotContainer::GetAutonomousCommand() {
-  return frc2::cmd::Print("No autonomous command configured");
+frc2::Command *RobotContainer::GetAutonomousCommand() {
+  return m_autoChooser.GetSelected();
 }
