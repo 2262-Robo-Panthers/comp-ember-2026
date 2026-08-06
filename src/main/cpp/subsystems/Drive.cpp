@@ -5,18 +5,25 @@
 #include "subsystems/Drive.h"
 
 #include <algorithm>
+#include <vector>
 
 #include <hal/FRCUsageReporting.h>
 
 #include <frc/ADIS16470_IMU.h>
 #include <frc/shuffleboard/BuiltInWidgets.h>
 #include <frc/DriverStation.h>
+#include <frc/RobotBase.h>
+#include <frc/system/plant/DCMotor.h>
 
 #include <pathplanner/lib/auto/AutoBuilder.h>
+#include <pathplanner/lib/config/ModuleConfig.h>
 #include <pathplanner/lib/config/RobotConfig.h>
 #include <pathplanner/lib/controllers/PPHolonomicDriveController.h>
 
 #include <units/angle.h>
+#include <units/current.h>
+#include <units/mass.h>
+#include <units/moment_of_inertia.h>
 
 #include "util/Constants.h"
 
@@ -25,6 +32,35 @@ using Idx = Types::Swerve::SetIndices;
 using namespace pathplanner;
 
 namespace Subsystems {
+
+namespace {
+RobotConfig CreateRobotConfig() {
+  constexpr auto kRobotMass; //= ADD LATER;
+  constexpr auto kRobotMoi; //= ADD LATER;
+  constexpr auto kWheelCof; //= ADD LATER
+  constexpr auto kDriveCurrentLimit; //= ADD LATER;
+
+  return RobotConfig{
+    kRobotMass,
+    kRobotMoi,
+    ModuleConfig{
+      Constants::Drive::Swerve::wheelDiameter / 2.0,
+      Constants::Drive::maxSpeedLinear,
+      kWheelCof,
+      frc::DCMotor::NEO(1),
+      Constants::Drive::Swerve::driveMotorReduction,
+      kDriveCurrentLimit,
+      1
+    },
+    std::vector<frc::Translation2d>{
+      Constants::Drive::Swerve::moduleOffsets[Idx::FL].Translation(),
+      Constants::Drive::Swerve::moduleOffsets[Idx::FR].Translation(),
+      Constants::Drive::Swerve::moduleOffsets[Idx::RL].Translation(),
+      Constants::Drive::Swerve::moduleOffsets[Idx::RR].Translation(),
+    }
+  };
+}
+}
 
 bool Drive::ShouldFlipCoordinates() {
   auto alliance = frc::DriverStation::GetAlliance();
@@ -68,6 +104,13 @@ Drive::Drive() :
     HALUsageReporting::kRobotDriveSwerve_MaxSwerve
   );
 
+  if (frc::RobotBase::IsReal()) {
+    frc::DriverStation::ReportWarning(
+      "PathPlanner robot config is using code defaults. Match the GUI robot settings to util/Constants.h.",
+      false
+    );
+  }
+
   AutoBuilder::configure(
     [this]()            { return GetOdometry();      },
     [this](auto pose)   { ResetOdometry(pose);       },
@@ -77,7 +120,7 @@ Drive::Drive() :
       PIDConstants(5.0, 0.0, 0.0),
       PIDConstants(5.0, 0.0, 0.0)
     ),
-    RobotConfig::fromGUISettings(),
+    CreateRobotConfig(),
     Drive::ShouldFlipCoordinates,
     this
   );

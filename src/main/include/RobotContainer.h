@@ -4,7 +4,8 @@
 
 #pragma once
 
-#include <frc2/command/CommandPtr.h>
+#include <frc/smartdashboard/SendableChooser.h>
+#include <frc2/command/Command.h>
 #include <frc2/command/button/CommandXboxController.h>
 
 #include "subsystems/Drive.h"
@@ -16,14 +17,17 @@ class RobotContainer {
  public:
   RobotContainer();
 
-  frc2::CommandPtr GetAutonomousCommand();
+  frc2::Command *GetAutonomousCommand();
 
  private:
   void ConfigureBindings();
+  void ConfigureNamedCommands();
 
   frc2::CommandXboxController m_driveTrainController{Constants::Operator::Usb::driveTrain};
   frc2::CommandXboxController m_endEffectorController{Constants::Operator::Usb::endEffector};
 
   Subsystems::Drive m_subsystemDrive;
   Subsystems::Shooter m_subsystemShooter;
+
+  frc::SendableChooser<frc2::Command *> m_autoChooser;
 };
